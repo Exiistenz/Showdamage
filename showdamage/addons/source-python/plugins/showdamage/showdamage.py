@@ -7,7 +7,7 @@ from players.entity import Player
 
 from .configs import g_configs
 from .info import info
-from .strings import *
+from .strings import g_hitgroups_name, g_damage_message
 
 ## GLOBALS
 
@@ -33,11 +33,12 @@ def player_action(event_data):
         damage = str(event_data['dmg_health'])
         armor = str(event_data['dmg_armor'])
         hitgroup = g_hitgroups_name[event_data['hitgroup']][attacker.language[:2]]
-    except:
+    except KeyError:
         return
 
     info = (
-        'full' if g_configs['show_hit_member'].get_int() == 1 and g_configs['show_armor_hit'].get_int() == 1 else (
+        'full' if g_configs['show_hit_member'].get_int() == 1 and 
+        g_configs['show_armor_hit'].get_int() == 1 else (
             'hitgroup' if g_configs['show_hit_member'].get_int() == 1 else (
                 'armor' if g_configs['show_armor_hit'].get_int() == 1 else 'damage'
             )
@@ -47,4 +48,5 @@ def player_action(event_data):
     message = g_damage_message[g_configs['display_type'].get_int()][info]
 
     # Display message
-    g_show_damage_type[g_configs['display_type'].get_int()](message).send(attacker.index, hitgroup=hitgroup, damage=damage, armor=armor)
+    g_show_damage_type[g_configs['display_type'].get_int()](message).send(attacker.index, 
+        hitgroup=hitgroup, damage=damage, armor=armor)
